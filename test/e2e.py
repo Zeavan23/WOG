@@ -1,4 +1,6 @@
 from selenium import webdriver
+import sys
+import time
 
 def test_scores_service(app_url):
     driver = None
@@ -6,13 +8,11 @@ def test_scores_service(app_url):
         driver = webdriver.Chrome()
 
         driver.get(app_url)
-
-        driver.implicitly_wait(10)
+        time.sleep(5)  # Wait for the page to load
 
         score_element = driver.find_element_by_id("score")
 
         score_text = score_element.text
-
         score = int(score_text)
         if 1 <= score <= 1000:
             return True
@@ -29,11 +29,10 @@ def main_function():
     app_url = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:5000"
 
     if test_scores_service(app_url):
-        return 0  # Tests passés
+        return 0  # Tests passed
     else:
-        return -1  # Tests échoués
+        return -1  # Tests failed
 
 if __name__ == "__main__":
-    import sys
     exit_code = main_function()
-    exit(exit_code)
+    sys.exit(exit_code)

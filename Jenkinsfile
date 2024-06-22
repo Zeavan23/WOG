@@ -1,19 +1,30 @@
 pipeline {
     agent any
-
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Build') {
             steps {
                 script {
-                    docker.build('my-flask-app')
+                    if (isUnix()) {
+                        sh 'docker build -t my-flask-app .'
+                    } else {
+                        bat 'docker build -t my-flask-app .'
+                    }
                 }
             }
         }
-
         stage('Run') {
             steps {
                 script {
-                    docker.image('my-flask-app').run('-p 5000:5000 --name my-app')
+                    if (isUnix()) {
+                        sh 'docker run -d -p 5000:5000 my-flask-app'
+                    } else {
+                        bat 'docker run -d -p 5000:5000 my-flask-app'
+                    }
                 }
             }
         }
