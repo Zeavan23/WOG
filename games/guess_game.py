@@ -1,4 +1,3 @@
-# guess_game.py
 import random
 
 def generate_number(difficulty):
@@ -6,24 +5,19 @@ def generate_number(difficulty):
 
 def get_guess_from_user(difficulty):
     while True:
-        guess = input(f"Guess a number between 0 and {difficulty}: ")
-        if guess.isdigit() and 0 <= int(guess) <= difficulty:
-            return int(guess)
-        else:
-            print("Invalid input. Please enter a number between 0 and", difficulty)
-
-def compare_results(secret_number, user_guess):
-    return secret_number == user_guess
+        try:
+            guess = int(input(f"Guess a number between 0 and {difficulty}: "))
+            if 0 <= guess <= difficulty:
+                return guess
+            else:
+                print("Invalid input. Please enter a number within the specified range.")
+        except ValueError:
+            print("Invalid input. Please enter a valid number.")
 
 def play(difficulty):
     secret_number = generate_number(difficulty)
     user_guess = get_guess_from_user(difficulty)
-    if compare_results(secret_number, user_guess):
-        print("Congratulations! You guessed the correct number.")
-        return True
-    else:
-        print(f"Sorry, the correct number was {secret_number}. You lost. Better luck next time.")
-        return False
+    return user_guess == secret_number
 
 if __name__ == "__main__":
     print("Welcome to the Guess Game!")
@@ -31,9 +25,8 @@ if __name__ == "__main__":
         difficulty = int(input("Enter the difficulty level (a positive integer): "))
         result = play(difficulty)
         if result:
-            print("Congratulations! You won!")
-        else:
-            print("Do you want to play again? (yes/no): ")
-            replay = input().lower()
-            if replay != "yes":
-                break
+            break
+
+        replay = input("Do you want to play again? (yes/no): ").lower()
+        if replay != "yes":
+            break
