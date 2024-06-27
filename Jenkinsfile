@@ -10,9 +10,11 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'docker build -t my-flask-app .'
+                        sh 'docker-compose down'
+                        sh 'docker-compose up --build -d'
                     } else {
-                        bat 'docker build -t my-flask-app .'
+                        bat 'docker-compose down'
+                        bat 'docker-compose up --build -d'
                     }
                 }
             }
@@ -20,11 +22,23 @@ pipeline {
         stage('Run') {
             steps {
                 script {
+                    // Vérifiez si le conteneur est en cours d'exécution
                     if (isUnix()) {
-                        sh 'docker run -d -p 5000:5000 my-flask-app'
+                        sh 'docker ps | grep wog-web'
                     } else {
-                        bat 'docker run -d -p 5000:5000 my-flask-app'
+                        bat 'docker ps | findstr wog-web'
                     }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                if (isUnix()) {
+                    sh 'docker-compose down'
+                } else {
+                    bat 'docker-compose down'
                 }
             }
         }
