@@ -1,17 +1,17 @@
-# Utilisez une image de base légère de Python
+# Use an official Python runtime as a parent image
 FROM python:3.8-slim
 
-# Définir le répertoire de travail dans le conteneur
+# Set the working directory in the container
 WORKDIR /app
 
-# Copier les fichiers de l'application dans le conteneur
-COPY . .
+# Copy the current directory contents into the container
+COPY . /app
 
-# Installer les dépendances
+# Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Exposer le port sur lequel l'application va s'exécuter
-EXPOSE 5000
+# Make port 8777 available to the world outside this container
+EXPOSE 8777
 
-# Définir la commande pour démarrer l'application
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+# Run main_score.py when the container launches
+CMD ["python", "main_score.py"]

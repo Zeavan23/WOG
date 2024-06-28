@@ -4,7 +4,7 @@ services:
   web:
     build: .
     ports:
-      - "5000:5000"
+      - "8777:8777"
     volumes:
-      - ./scores:/app
-    command: python app.py
+      - ./scores:/app/scores
+    command: python main_score.py
