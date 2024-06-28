@@ -13,5 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Make port 8777 available to the world outside this container
 EXPOSE 8777
 
-# Run main_score.py when the container launches
-CMD ["python", "main_score.py"]
+# Set the USERNAME environment variable (adjust as needed)
+ENV USERNAME="default_user"
+
+# Run MainScore.py when the container launches
+CMD ["python", "main_scores.py"]

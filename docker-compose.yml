@@ -5,6 +5,8 @@ services:
     build: .
     ports:
       - "8777:8777"
+    environment:
+      - USERNAME=<votre_nom_utilisateur>
+    command: python main_scores.py
     volumes:
       - ./scores:/app/scores
-    command: python main_score.py

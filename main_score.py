@@ -1,20 +1,19 @@
+import os
 from utils import add_score, get_player_score
 from games.memory_game import play_memory_game
 from games.guess_game import play as play_guess_game
 from games.currency_roulette_game import play as play_currency_roulette_game
-import os
 
 def clear_console():
-    if os.name == 'nt':  # Pour Windows
+    if os.name == 'nt':
         _ = os.system('cls')
-    else:  # Pour Mac et Linux
+    else:
         _ = os.system('clear')
 
 def welcome(username):
     print(f"Hi {username} and welcome to the World of Games: The Epic Journey")
 
 def start_play(username, api_key):
-    # Supprimer l'affichage du score ici
     while True:
         print("Please choose a game to play:")
         print("1. Memory Game - a sequence of numbers will appear for 3 seconds and you have to guess it back.")
@@ -36,7 +35,7 @@ def start_play(username, api_key):
         difficulty = int(difficulty)
 
         if game_choice == '1':
-            clear_console()  # Clear the screen before starting the game
+            clear_console()
             print(f"Starting Memory Game with difficulty level {difficulty}")
             result = play_memory_game(difficulty)
         elif game_choice == '2':
@@ -47,11 +46,12 @@ def start_play(username, api_key):
             result = play_currency_roulette_game(difficulty, api_key)
 
         if result:
-            points_won = difficulty * 5  # Points won based on difficulty level
-            new_score = get_player_score(username) + points_won
-            add_score(username, new_score)  # Add the new score to the user's file
+            points_won = difficulty * 5
+            current_score = get_player_score(username) or 0
+            new_score = current_score + points_won
+            add_score(username, new_score)
             print("Congratulations! You won!")
-            print(f"If you want to view your score, go to: http://localhost:5000/scores/{username}")
+            print(f"If you want to view your score, go to: http://localhost:8777/scores/{username}")
         else:
             print("Sorry, you lost. Better luck next time.")
 
@@ -60,7 +60,10 @@ def start_play(username, api_key):
             break
 
 if __name__ == "__main__":
-    username = input("Enter your name: ")
+    username = os.getenv("USERNAME")  # Utilisation de la variable d'environnement pour le nom d'utilisateur
     api_key = "3b0a56867dae17a85e74e4de"  # Assurez-vous que la clé API est définie ici
-    welcome(username)
-    start_play(username, api_key)
+    if not username:
+        print("Error: USERNAME environment variable not set.")
+    else:
+        welcome(username)
+        start_play(username, api_key)
