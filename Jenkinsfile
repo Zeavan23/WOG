@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_REPO = 'liorn23/wog-web'  // Utilisez votre nom d'utilisateur Docker Hub
+        DOCKER_HUB_REPO = 'liorn23/wog-web'
+        PYTHON_PATH = 'C:\\users\\nizar\\Downloads\\python-3.12.2-amd64 (1).exe'
     }
 
     stages {
@@ -37,8 +38,8 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    // Exécuter les tests end-to-end
-                    bat 'python test/e2e.py'
+                    // Utiliser le chemin complet vers l'exécutable Python
+                    bat "\"${env.PYTHON_PATH}\" test/e2e.py"
                 }
             }
         }
