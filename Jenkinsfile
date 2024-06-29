@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     // Libérer le port 8777 s'il est occupé
-                    bat 'netstat -ano | findstr :8777 | findstr LISTENING && for /f "tokens=5" %a in (\'netstat -ano ^| findstr :8777 ^| findstr LISTENING\') do taskkill /f /pid %a || echo Port 8777 is not in use'
+                    bat 'FOR /F "tokens=5" %a IN (\'netstat -ano ^| findstr :8777 ^| findstr LISTENING\') DO taskkill /F /PID %a || echo Port 8777 is not in use'
                 }
                 bat 'docker-compose up -d'
             }
