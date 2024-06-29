@@ -5,8 +5,8 @@ pipeline {
         stage('Setup Python Environment') {
             steps {
                 bat 'python -m venv .venv'
-                bat '.venv\\Scripts\\pip install --upgrade pip --user'
-                bat '.venv\\Scripts\\pip install selenium webdriver_manager --user'
+                bat '.venv\\Scripts\\pip install --upgrade pip'
+                bat '.venv\\Scripts\\pip install selenium webdriver_manager'
             }
         }
 
