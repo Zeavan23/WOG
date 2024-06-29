@@ -1,35 +1,32 @@
+import re
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
 
 def test_scores_service(app_url):
-    chrome_options = Options()
-    chrome_service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(executable_path=chrome_service.path, options=chrome_options)
+    driver = webdriver.Chrome(ChromeDriverManager().install())
 
     try:
         driver.get(app_url)
 
-        # Attendre jusqu'à 60 secondes que l'élément soit visible
         WebDriverWait(driver, 60).until(
             EC.visibility_of_element_located((By.XPATH, '/html/body/h1'))
         )
 
-        # Récupérer le texte de l'élément score
         score_element = driver.find_element(By.XPATH, '/html/body/h1')
-        score_value = int(score_element.text.split()[-1])
+        score_text = score_element.text
 
-        # Affichage du score pour débogage
-        print(f"Score obtenu : {score_value}")
+        # Utiliser une expression régulière pour extraire le nombre
+        match = re.search(r'\d+', score_text)
+        if match:
+            score_value = int(match.group())
+            print(f"Score obtenu : {score_value}")
 
-        # Vérifier si le score est entre 1 et 1000
-        if 1 <= score_value <= 1000:
-            return True
+            return 1 <= score_value <= 1000
         else:
+            print("Aucun score trouvé dans le texte.")
             return False
 
     except Exception as e:
@@ -40,11 +37,13 @@ def test_scores_service(app_url):
         driver.quit()
 
 def main_function():
-    app_url = 'http://localhost:8777/scores/lior'  # Remplacez par l'URL correcte de votre application
+    app_url = 'http://localhost:8777/scores/lior'
     if test_scores_service(app_url):
-        return 0  # Tests réussis
+        print("Test réussi : Le score est dans la plage correcte.")
+        return 0
     else:
-        return -1  # Tests échoués
+        print("Test échoué : Le score n'est pas dans la plage attendue ou l'élément n'est pas trouvé.")
+        return -1
 
 if __name__ == "__main__":
     exit_code = main_function()
