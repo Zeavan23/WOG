@@ -18,9 +18,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    // Supprimer les conteneurs orphelins
                     bat 'docker-compose down --remove-orphans || true'
-                    // Construire l'image Docker
                     bat 'docker-compose up --build -d'
                 }
             }
@@ -29,7 +27,6 @@ pipeline {
         stage('Run') {
             steps {
                 script {
-                    // Exécuter le conteneur Docker et exposer le port 8777
                     bat 'docker-compose up -d'
                 }
             }
@@ -38,8 +35,9 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    // Utiliser le chemin complet vers l'exécutable Python
-                    bat "\"${env.PYTHON_PATH}\" test/e2e.py"
+                    echo "Running tests"
+                    // Utiliser le chemin complet vers l'exécutable Python et le script de test
+                    bat "\"${env.PYTHON_PATH}\" C:\\Users\\nizar\\PycharmProjects\\WOG\\test\\e2e.py"
                 }
             }
         }
@@ -47,10 +45,7 @@ pipeline {
         stage('Finalize') {
             steps {
                 script {
-                    // Arrêter le conteneur Docker
                     bat 'docker-compose down'
-
-                    // Tagger et pousser l'image Docker vers DockerHub
                     bat "docker tag wog-web:latest ${DOCKER_HUB_REPO}:latest"
                     withCredentials([usernamePassword(credentialsId: '790f7c8d-b10a-4676-86f8-23b4d854c7ecc', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
                         bat "docker login -u %DOCKER_HUB_USERNAME% -p %DOCKER_HUB_PASSWORD%"
