@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('dockerhub-credentials')  // Assurez-vous d'avoir configuré vos identifiants DockerHub dans Jenkins
-        DOCKER_HUB_REPO = 'your_dockerhub_username/wog-web'
+        DOCKER_HUB_REPO = 'liorn23/wog-web'  // Utilisez votre nom d'utilisateur Docker Hub
     }
 
     stages {
@@ -18,8 +17,9 @@ pipeline {
         stage('Build') {
             steps {
                 script {
+                    // Supprimer les conteneurs orphelins
+                    bat 'docker-compose down --remove-orphans || true'
                     // Construire l'image Docker
-                    bat 'docker-compose down || true'
                     bat 'docker-compose up --build -d'
                 }
             }
@@ -50,10 +50,10 @@ pipeline {
                     bat 'docker-compose down'
 
                     // Tagger et pousser l'image Docker vers DockerHub
-                    bat 'docker tag wog-web:latest ${DOCKER_HUB_REPO}:latest'
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
-                        bat 'docker login -u %DOCKER_HUB_USERNAME% -p %DOCKER_HUB_PASSWORD%'
-                        bat 'docker push ${DOCKER_HUB_REPO}:latest'
+                    bat "docker tag wog-web:latest ${DOCKER_HUB_REPO}:latest"
+                    withCredentials([usernamePassword(credentialsId: '790f7c8d-b10a-4676-86f8-23b4d854c7ecc', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
+                        bat "docker login -u %DOCKER_HUB_USERNAME% -p %DOCKER_HUB_PASSWORD%"
+                        bat "docker push ${DOCKER_HUB_REPO}:latest"
                     }
                 }
             }

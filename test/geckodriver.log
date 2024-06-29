@@ -1,0 +1,62 @@
+1719648902630	geckodriver	INFO	Listening on 127.0.0.1:54568
+1719648905706	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-no-remote" "-profile" "C:\\Users\\nizar\\AppData\\Local\\Temp\\rust_mozprofileahNfkV"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1719648906023	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1719648906476	Marionette	INFO	Listening on port 54578
+Read port: 54578
+1719648906635	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1719648928082	Marionette	INFO	Stopped listening on port 54578
+Dynamically enable window occlusion 1
+1719648981748	geckodriver	INFO	Listening on 127.0.0.1:54626
+1719648984803	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-no-remote" "-profile" "C:\\Users\\nizar\\AppData\\Local\\Temp\\rust_mozprofilefXIiR7"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1719648985051	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1719648985272	Marionette	INFO	Listening on port 54636
+Read port: 54636
+1719648985403	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1719649006488	Marionette	INFO	Stopped listening on port 54636
+Dynamically enable window occlusion 1
+1719649116601	geckodriver	INFO	Listening on 127.0.0.1:54702
+1719649119641	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-no-remote" "-profile" "C:\\Users\\nizar\\AppData\\Local\\Temp\\rust_mozprofileugs1hb"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1719649119920	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1719649120172	Marionette	INFO	Listening on port 54712
+Read port: 54712
+1719649120357	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1719649151502	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+1719649151548	Marionette	INFO	Stopped listening on port 54712
+Dynamically enable window occlusion 1
+console.error: services.settings: 
+  Message: NetworkError: Network error: TypeError: NetworkError: Network request failed
+  Stack:
+    APIError@resource://services-settings/RemoteSettingsClient.sys.mjs:107:1
+NetworkError@resource://services-settings/RemoteSettingsClient.sys.mjs:111:5
+_adjustedError@resource://services-settings/RemoteSettingsClient.sys.mjs:911:14
+maybeSync@resource://services-settings/RemoteSettingsClient.sys.mjs:816:38
+
+console.warn: services.settings: blocklists/gfx sync interrupted by shutdown
+console.warn: services.settings: main/sites-classification sync interrupted by shutdown
+console.warn: services.settings: main/anti-tracking-url-decoration sync interrupted by shutdown
+console.error: (new AbortError("IndexedDB: main/personality-provider-recipe getLastModified() IndexedDB:  execute() A request was aborted, for example through a call to IDBTransaction.abort.", "resource://services-settings/IDBHelpers.sys.mjs", 16))
+1719649389583	geckodriver	INFO	Listening on 127.0.0.1:54834
+1719649392637	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-no-remote" "-profile" "C:\\Users\\nizar\\AppData\\Local\\Temp\\rust_mozprofilehOBbv0"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1719649392882	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1719649393120	Marionette	INFO	Listening on port 54844
+Read port: 54844
+1719649393246	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1719649424154	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+1719649424342	Marionette	INFO	Stopped listening on port 54844
+Dynamically enable window occlusion 1
+console.warn: services.settings: main/pioneer-study-addons-v1 sync interrupted by shutdown
+console.warn: services.settings: main/top-sites sync interrupted by shutdown
+console.warn: services.settings: main/doh-providers sync interrupted by shutdown
+console.error: (new Error("IndexedDB: main/ms-language-packs getLastModified() IndexedDB:  execute() The application is shutting down", "resource://services-settings/IDBHelpers.sys.mjs", 16))
