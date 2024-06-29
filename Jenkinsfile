@@ -10,23 +10,6 @@ pipeline {
             }
         }
 
-        stage('Download geckodriver') {
-            steps {
-                script {
-                    def geckoDriverUrl = "https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-win64.zip"
-                    def downloadPath = "${WORKSPACE}\\geckodriver.zip"
-                    def extractPath = "${WORKSPACE}\\geckodriver"
-                    powershell """
-                    Invoke-WebRequest -Uri ${geckoDriverUrl} -OutFile ${downloadPath}
-                    if (-Not (Test-Path ${extractPath})) {
-                        New-Item -ItemType Directory -Path ${extractPath}
-                    }
-                    Expand-Archive -Path ${downloadPath} -DestinationPath ${extractPath}
-                    """
-                }
-            }
-        }
-
         stage('Build') {
             steps {
                 bat 'docker-compose down --remove-orphans || true'
@@ -36,6 +19,10 @@ pipeline {
 
         stage('Run') {
             steps {
+                script {
+                    // Libérer le port 8777 s'il est occupé
+                    bat 'netstat -ano | findstr :8777 | findstr LISTENING && for /f "tokens=5" %a in (\'netstat -ano ^| findstr :8777 ^| findstr LISTENING\') do taskkill /f /pid %a || echo Port 8777 is not in use'
+                }
                 bat 'docker-compose up -d'
             }
         }
@@ -43,7 +30,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running tests'
-                bat '.venv\\Scripts\\python C:\\Users\\nizar\\PycharmProjects\\WOG\\test\\e2e.py'
+                bat ".venv\\Scripts\\python C:\\Users\\nizar\\PycharmProjects\\WOG\\test\\e2e.py"
             }
         }
     }
