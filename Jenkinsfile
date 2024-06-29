@@ -43,15 +43,15 @@ pipeline {
 
         stage('Run') {
             steps {
-                script {
-                    def portInUse = bat(script: 'netstat -ano | findstr :8777 | findstr LISTENING', returnStatus: true) == 0
-                    if (portInUse) {
-                        def pid = bat(script: 'for /f "tokens=5" %a in (\'netstat -ano ^| findstr :8777 ^| findstr LISTENING\') do @echo %a', returnStdout: true).trim()
-                        bat "taskkill /F /PID ${pid}"
-                    } else {
-                        echo 'Port 8777 is not in use'
-                    }
+                powershell """
+                \$portUsed = (Get-NetTCPConnection -LocalPort 8777 -State Listen -ErrorAction SilentlyContinue)
+                if (\$portUsed) {
+                    \$pid = \$portUsed.OwningProcess
+                    Stop-Process -Id \$pid -Force
+                } else {
+                    Write-Output 'Port 8777 is not in use'
                 }
+                """
                 bat 'docker-compose up -d'
             }
         }
@@ -74,4 +74,5 @@ pipeline {
         }
     }
 }
+
 
