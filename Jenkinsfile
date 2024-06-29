@@ -2,11 +2,32 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Setup Python Environment') {
             steps {
                 bat 'python -m venv .venv'
                 bat '.venv\\Scripts\\pip install --upgrade pip'
                 bat '.venv\\Scripts\\pip install selenium webdriver_manager'
+            }
+        }
+
+        stage('Download geckodriver') {
+            steps {
+                powershell """
+                \$geckoDriverUrl = 'https://github.com/mozilla/geckodriver/releases/latest/download/geckodriver-v0.30.0-win64.zip'
+                \$downloadPath = 'C:\\ProgramData\\Jenkins\\geckodriver.zip'
+                \$extractPath = 'C:\\ProgramData\\Jenkins\\geckodriver'
+
+                Invoke-WebRequest -Uri \$geckoDriverUrl -OutFile \$downloadPath
+                Expand-Archive -Path \$downloadPath -DestinationPath \$extractPath -Force
+                \$env:Path += ';' + \$extractPath
+                Write-Output "geckodriver installed and added to PATH."
+                """
             }
         }
 
@@ -20,8 +41,11 @@ pipeline {
         stage('Run') {
             steps {
                 script {
-                    // Libérer le port 8777 s'il est occupé
-                    bat 'FOR /F "tokens=5" %a IN (\'netstat -ano ^| findstr :8777 ^| findstr LISTENING\') DO taskkill /F /PID %a || echo Port 8777 is not in use'
+                    def portInUse = bat(script: 'netstat -ano | findstr :8777 | findstr LISTENING', returnStatus: true) == 0
+                    if (portInUse) {
+                        def pid = bat(script: 'for /f "tokens=5" %a in (\'netstat -ano ^| findstr :8777 ^| findstr LISTENING\') do @echo %a', returnStdout: true).trim()
+                        bat "taskkill /F /PID ${pid}"
+                    }
                 }
                 bat 'docker-compose up -d'
             }
@@ -30,7 +54,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running tests'
-                bat ".venv\\Scripts\\python C:\\Users\\nizar\\PycharmProjects\\WOG\\test\\e2e.py"
+                bat '.venv\\Scripts\\python C:\\Users\\nizar\\PycharmProjects\\WOG\\test\\e2e.py'
             }
         }
     }
