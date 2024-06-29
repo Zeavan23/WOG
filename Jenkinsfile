@@ -30,6 +30,14 @@ pipeline {
             }
         }
 
+        stage('Install Selenium') {
+            steps {
+                script {
+                    bat 'python -m pip install selenium'
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 script {
