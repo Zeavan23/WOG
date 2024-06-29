@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_HUB_REPO = 'liorn23/wog-web'
-        PYTHON_PATH = 'C:\\Users\\nizar\\AppData\\Programs\\Python\\Python312\\python.exe'
+        PYTHON_PATH = 'C:\\Users\\nizar\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\venv\\scripts\\nt\\python.exe'
     }
 
     stages {
