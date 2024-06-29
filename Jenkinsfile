@@ -16,21 +16,23 @@ pipeline {
             }
         }
 
-        stage('Download geckodriver') {
+        stage('Download and Setup Chrome and ChromeDriver') {
             steps {
-                powershell """
-                \$geckoDriverUrl = 'https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-win64.zip'
-                \$downloadPath = 'C:\\ProgramData\\Jenkins\\geckodriver.zip'
-                \$extractPath = 'C:\\ProgramData\\Jenkins\\geckodriver'
+                script {
+                    def chromeUrl = 'https://storage.googleapis.com/chrome-for-testing-public/126.0.6478.126/win64/chrome-win64.zip'
+                    def chromeDriverUrl = 'https://storage.googleapis.com/chromium-browser-snapshots/Win/126.0.6478.126/chromedriver_win32.zip'
+                    def downloadDir = "${pwd()}/downloads"
+                    def extractDir = "${pwd()}/chrome"
 
-                Invoke-WebRequest -Uri \$geckoDriverUrl -OutFile \$downloadPath
-                If (-Not (Test-Path \$extractPath)) {
-                    New-Item -ItemType Directory -Path \$extractPath
+                    bat "powershell -Command \"if (!(Test-Path -Path ${downloadDir})) { New-Item -ItemType Directory -Path ${downloadDir} }\""
+                    bat "powershell -Command \"Invoke-WebRequest -Uri ${chromeUrl} -OutFile ${downloadDir}/chrome-win64.zip\""
+                    bat "powershell -Command \"Expand-Archive -Path ${downloadDir}/chrome-win64.zip -DestinationPath ${extractDir} -Force\""
+
+                    bat "powershell -Command \"Invoke-WebRequest -Uri ${chromeDriverUrl} -OutFile ${downloadDir}/chromedriver_win32.zip\""
+                    bat "powershell -Command \"Expand-Archive -Path ${downloadDir}/chromedriver_win32.zip -DestinationPath ${extractDir} -Force\""
+
+                    bat "setx PATH \"%PATH%;${extractDir}\\chrome-win64\\chrome-win64;${extractDir}\\chromedriver_win32\""
                 }
-                Expand-Archive -Path \$downloadPath -DestinationPath \$extractPath -Force
-                \$env:Path += ';' + \$extractPath
-                Write-Output "geckodriver installed and added to PATH."
-                """
             }
         }
 
@@ -65,5 +67,4 @@ pipeline {
         }
     }
 }
-
 
