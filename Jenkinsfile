@@ -2,12 +2,11 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout SCM') {
+        stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-
         stage('Setup Python Environment') {
             steps {
                 bat 'python -m venv .venv'
@@ -15,21 +14,19 @@ pipeline {
                 bat '.venv\\Scripts\\pip install selenium webdriver_manager'
             }
         }
-
-        stage('Build') {
+        stage('Build and Run Docker') {
             steps {
-                bat 'docker-compose down --remove-orphans || true'
-                bat 'docker-compose up --build -d'
+                script {
+                    try {
+                        bat 'docker-compose down --remove-orphans || true'
+                    } catch (Exception e) {
+                        echo 'Docker compose down failed but continuing.'
+                    }
+                    bat 'docker-compose up --build -d'
+                }
             }
         }
-
-        stage('Run') {
-            steps {
-                bat 'docker-compose up -d'
-            }
-        }
-
-        stage('Test') {
+        stage('Run Tests') {
             steps {
                 echo 'Running tests'
                 bat '.venv\\Scripts\\python C:\\Users\\nizar\\PycharmProjects\\WOG\\test\\e2e.py'
@@ -39,8 +36,11 @@ pipeline {
 
     post {
         always {
-            echo 'Cleaning up'
+            echo 'Cleaning up Docker containers'
             bat 'docker-compose down'
+        }
+        success {
+            echo 'Pipeline succeeded.'
         }
         failure {
             echo 'Pipeline failed.'
