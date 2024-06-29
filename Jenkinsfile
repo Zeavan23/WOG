@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_HUB_REPO = 'liorn23/wog-web'
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -14,43 +10,20 @@ pipeline {
             }
         }
 
-        stage('Install Python') {
-            steps {
-                script {
-                    bat 'setx PATH "%PATH%;C:\\Python39"'
-                }
-            }
-        }
-
-        stage('Verify Python Installation') {
-            steps {
-                script {
-                    bat 'python --version'
-                }
-            }
-        }
-
-        stage('Install Python Packages') {
-            steps {
-                script {
-                    bat 'python -m pip install selenium webdriver_manager'
-                }
-            }
-        }
-
         stage('Build') {
             steps {
                 script {
-                    bat 'docker-compose down --remove-orphans || true'
+                    bat 'docker-compose down || true'
                     bat 'docker-compose up --build -d'
                 }
             }
         }
 
-        stage('Run') {
+        stage('Install Dependencies') {
             steps {
                 script {
-                    bat 'docker-compose up -d'
+                    bat 'python -m pip install --upgrade pip'
+                    bat 'pip install selenium'
                 }
             }
         }
@@ -58,7 +31,6 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    echo "Running tests"
                     bat 'python C:\\Users\\nizar\\PycharmProjects\\WOG\\test\\e2e.py'
                 }
             }
@@ -68,13 +40,24 @@ pipeline {
             steps {
                 script {
                     bat 'docker-compose down'
-                    bat "docker tag wog-web:latest ${DOCKER_HUB_REPO}:latest"
-                    withCredentials([usernamePassword(credentialsId: '790f7c8d-b10a-4676-86f8-23b4d854c7ecc', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
-                        bat "docker login -u %DOCKER_HUB_USERNAME% -p %DOCKER_HUB_PASSWORD%"
-                        bat "docker push ${DOCKER_HUB_REPO}:latest"
-                    }
+                    bat 'docker tag wog-web:latest liorn23/wog-web:latest'
+                    bat 'docker push liorn23/wog-web:latest'
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            script {
+                bat 'docker-compose down'
+            }
+        }
+        success {
+            echo 'Pipeline completed successfully.'
+        }
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }
