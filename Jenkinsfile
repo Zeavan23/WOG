@@ -30,10 +30,10 @@ pipeline {
             }
         }
 
-        stage('Install Selenium') {
+        stage('Install Python Packages') {
             steps {
                 script {
-                    bat 'python -m pip install selenium'
+                    bat 'python -m pip install selenium webdriver_manager'
                 }
             }
         }
