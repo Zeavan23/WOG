@@ -1,3 +1,4 @@
+# app.py
 from flask import Flask, render_template_string
 from utils import get_player_score
 
@@ -37,4 +38,4 @@ def score_server(player_name):
         )
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8777)  # Port 5000 pour l'application Flask

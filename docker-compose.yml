@@ -1,12 +1,8 @@
-version: '3.8'
-
+version: '3'
 services:
-  web:
+  wog-web:
     build: .
     ports:
       - "8777:8777"
-    environment:
-      - USERNAME=<votre_nom_utilisateur>
-    command: python main_scores.py
     volumes:
-      - ./scores:/app/scores
+      - ./scores/Scores.txt:/app/scores/Scores.txt

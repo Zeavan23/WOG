@@ -29,7 +29,7 @@ def start_play(username, api_key):
         difficulty = input("Enter the difficulty level (1-5): ")
 
         if difficulty not in ['1', '2', '3', '4', '5']:
-            print("Invalid difficulty level. Please enter a number between 1 and 5.")
+            print("Invalid difficulty level. Please enter a number between 1 et 5.")
             continue
 
         difficulty = int(difficulty)

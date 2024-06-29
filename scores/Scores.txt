@@ -1,0 +1,6 @@
+lior:25
+lkior:5
+t:5
+l:5
+lr:5
+gf:5
