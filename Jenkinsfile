@@ -43,15 +43,6 @@ pipeline {
 
         stage('Run') {
             steps {
-                powershell """
-                \$portUsed = (Get-NetTCPConnection -LocalPort 8777 -State Listen -ErrorAction SilentlyContinue)
-                if (\$portUsed) {
-                    \$pid = \$portUsed.OwningProcess
-                    Stop-Process -Id \$pid -Force
-                } else {
-                    Write-Output 'Port 8777 is not in use'
-                }
-                """
                 bat 'docker-compose up -d'
             }
         }
