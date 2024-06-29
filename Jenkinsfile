@@ -2,77 +2,48 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']],
-                         doGenerateSubmoduleConfigurations: false, extensions: [],
-                         submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Zeavan23/WOG']]])
-            }
-        }
-
-        stage('Install Dependencies') {
+        stage('Setup Python Environment') {
             steps {
                 bat 'python -m venv .venv'
-                bat '.venv\\Scripts\\pip install --upgrade pip'
-                bat '.venv\\Scripts\\pip install -r requirements.txt'
+                bat '.venv\\Scripts\\pip install --upgrade pip --user'
+                bat '.venv\\Scripts\\pip install selenium webdriver_manager --user'
             }
         }
 
         stage('Download geckodriver') {
             steps {
-                powershell '''
-                    $geckoDriverUrl = "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-win64.zip"
-                    $downloadPath = "C:\\Users\\nizar\\Downloads\\geckodriver.zip"
-                    $extractPath = "C:\\Users\\nizar\\Downloads\\geckodriver"
-
-                    Invoke-WebRequest -Uri $geckoDriverUrl -OutFile $downloadPath
-
-                    If (-Not (Test-Path $extractPath)) {
-                        New-Item -ItemType Directory -Path $extractPath
+                script {
+                    def geckoDriverUrl = "https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-win64.zip"
+                    def downloadPath = "${WORKSPACE}\\geckodriver.zip"
+                    def extractPath = "${WORKSPACE}\\geckodriver"
+                    powershell """
+                    Invoke-WebRequest -Uri ${geckoDriverUrl} -OutFile ${downloadPath}
+                    if (-Not (Test-Path ${extractPath})) {
+                        New-Item -ItemType Directory -Path ${extractPath}
                     }
-
-                    Expand-Archive -Path $downloadPath -DestinationPath $extractPath
-
-                    $env:Path = "$env:Path;$extractPath"
-
-                    Write-Output "geckodriver installé et ajouté au PATH avec succès."
-                '''
+                    Expand-Archive -Path ${downloadPath} -DestinationPath ${extractPath}
+                    """
+                }
             }
         }
 
         stage('Build') {
             steps {
-                script {
-                    bat 'docker-compose down || true'
-                    bat 'docker-compose up --build -d'
-                }
+                bat 'docker-compose down --remove-orphans || true'
+                bat 'docker-compose up --build -d'
             }
         }
 
         stage('Run') {
             steps {
-                script {
-                    bat 'docker-compose up -d'
-                    bat 'timeout /t 10' // Attendre quelques secondes pour s'assurer que le service Flask est démarré
-                }
+                bat 'docker-compose up -d'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running tests'
-                script {
-                    bat '.venv\\Scripts\\python.exe C:\\Users\\nizar\\PycharmProjects\\WOG\\test\\e2e.py'
-                }
-            }
-        }
-
-        stage('Finalize') {
-            steps {
-                script {
-                    bat 'docker-compose down'
-                }
-                echo 'Pipeline completed.'
+                bat '.venv\\Scripts\\python C:\\Users\\nizar\\PycharmProjects\\WOG\\test\\e2e.py'
             }
         }
     }
@@ -80,12 +51,7 @@ pipeline {
     post {
         always {
             echo 'Cleaning up'
-            script {
-                bat 'docker-compose down'
-            }
-        }
-        success {
-            echo 'Pipeline succeeded.'
+            bat 'docker-compose down'
         }
         failure {
             echo 'Pipeline failed.'
