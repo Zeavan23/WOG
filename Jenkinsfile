@@ -17,7 +17,15 @@ pipeline {
         stage('Install Python') {
             steps {
                 script {
-                    bat 'choco install python --version=3.9.0 -y'
+                    bat 'setx PATH "%PATH%;C:\\Python39"'
+                }
+            }
+        }
+
+        stage('Verify Python Installation') {
+            steps {
+                script {
+                    bat 'python --version'
                 }
             }
         }
@@ -43,7 +51,7 @@ pipeline {
             steps {
                 script {
                     echo "Running tests"
-                    bat '"C:\\Users\\nizar\\AppData\\Local\\Programs\\Python\\Python312\\python.exe" C:\\Users\\nizar\\PycharmProjects\\WOG\\test\\e2e.py'
+                    bat 'python C:\\Users\\nizar\\PycharmProjects\\WOG\\test\\e2e.py'
                 }
             }
         }
