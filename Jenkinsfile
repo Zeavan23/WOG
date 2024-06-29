@@ -48,6 +48,8 @@ pipeline {
                     if (portInUse) {
                         def pid = bat(script: 'for /f "tokens=5" %a in (\'netstat -ano ^| findstr :8777 ^| findstr LISTENING\') do @echo %a', returnStdout: true).trim()
                         bat "taskkill /F /PID ${pid}"
+                    } else {
+                        echo 'Port 8777 is not in use'
                     }
                 }
                 bat 'docker-compose up -d'
