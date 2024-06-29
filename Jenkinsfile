@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_HUB_REPO = 'liorn23/wog-web'
+        PYTHON_PATH = 'C:\\Users\\nizar\\AppData\\Programs\\Python\\Python312\\python.exe'
     }
 
     stages {
@@ -35,7 +36,7 @@ pipeline {
             steps {
                 script {
                     echo "Running tests"
-                    bat 'python C:\\Users\\nizar\\PycharmProjects\\WOG\\test\\e2e.py'
+                    bat "\"${env.PYTHON_PATH}\" C:\\Users\\nizar\\PycharmProjects\\WOG\\test\\e2e.py"
                 }
             }
         }
@@ -54,4 +55,3 @@ pipeline {
         }
     }
 }
-
