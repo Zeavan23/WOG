@@ -19,11 +19,14 @@ pipeline {
         stage('Download geckodriver') {
             steps {
                 powershell """
-                \$geckoDriverUrl = 'https://github.com/mozilla/geckodriver/releases/latest/download/geckodriver-v0.30.0-win64.zip'
+                \$geckoDriverUrl = 'https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-win64.zip'
                 \$downloadPath = 'C:\\ProgramData\\Jenkins\\geckodriver.zip'
                 \$extractPath = 'C:\\ProgramData\\Jenkins\\geckodriver'
 
                 Invoke-WebRequest -Uri \$geckoDriverUrl -OutFile \$downloadPath
+                If (-Not (Test-Path \$extractPath)) {
+                    New-Item -ItemType Directory -Path \$extractPath
+                }
                 Expand-Archive -Path \$downloadPath -DestinationPath \$extractPath -Force
                 \$env:Path += ';' + \$extractPath
                 Write-Output "geckodriver installed and added to PATH."
